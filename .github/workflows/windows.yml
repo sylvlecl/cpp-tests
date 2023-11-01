@@ -1,4 +1,4 @@
-name: Ubuntu build
+name: Windows build
 
 on:
   push:
@@ -8,13 +8,15 @@ on:
 jobs:
   build:
     name: Build
-    runs-on: ubuntu-20.04
+    runs-on: windows-2022
     steps:
     - uses: actions/checkout@v3
     - name: Configure
+      shell: bash
       run: |
            cmake -B _build -S . \
            -DCMAKE_BUILD_TYPE=Release
     - name: Build
+      shell: bash
       run: |
              cmake --build _build --config Release
