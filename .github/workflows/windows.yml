@@ -11,15 +11,22 @@ jobs:
     runs-on: windows-2022
     steps:
     - uses: actions/checkout@v3
-    - name: Install ccache
+    - name: Install pre-requisites
       shell: cmd
       run: |
-        choco install --verbose ccache
+        choco install wget unzip zip --no-progress
+    - name: Install ccache
+      shell: bash
+      run: |
+        wget https://github.com/ccache/ccache/releases/download/v4.8.3/ccache-4.8.3-windows-x86_64.zip -O ccache.zip
+        unzip ccache.zip
+        rm ccache.zip
     - name: Configure
       shell: bash
       run: |
            cmake -B _build -S . \
-           -DCMAKE_BUILD_TYPE=Release
+           -DCMAKE_BUILD_TYPE=Release \
+           -DCMAKE_VS_GLOBALS="CLToolExe=ccache.exe;CLToolPath=${GITHUB_WORKSPACE}/ccache-4.8.3-windows-x86_64;TrackFileAccess=false;UseMultiToolTask=true;DebugInformationFormat=OldStyle"
     - name: Build
       shell: bash
       run: |
