@@ -1,0 +1,20 @@
+name: Ubuntu CI (push and/or release)
+
+on:
+  push:
+    branches:
+      - *
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v3
+    - name: Configure
+      run: |
+           cmake -B _build -S . \
+           -DCMAKE_BUILD_TYPE=Release
+    - name: Build
+      run: |
+             cmake --build _build --config Release
