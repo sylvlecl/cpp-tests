@@ -36,9 +36,9 @@ jobs:
       shell: bash
       run: |
            VERBOSE=1 cmake -B _build -S . \
-           -DCMAKE_BUILD_TYPE=Release \
            -DCMAKE_VS_GLOBALS="CLToolExe=cl.exe;CLToolPath=${CCACHE_DIR};TrackFileAccess=false;UseMultiToolTask=true;DebugInformationFormat=OldStyle"
+
     - name: Build
       shell: bash
       run: |
-        VERBOSE=1 cmake --build _build --config Release
+        VERBOSE=1 cmake --build _build --config release
