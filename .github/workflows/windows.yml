@@ -15,14 +15,17 @@ jobs:
       shell: cmd
       run: |
         choco install wget unzip zip --no-progress
+
     - name: Install ccache
       shell: bash
       run: |
         wget https://github.com/ccache/ccache/releases/download/v4.8.3/ccache-4.8.3-windows-x86_64.zip -O ccache.zip
         unzip ccache.zip
         rm ccache.zip
-        cp ccache-4.8.3-windows-x86_64/ccache.exe ccache-4.8.3-windows-x86_64/cl.exe
-        echo "${GITHUB_WORKSPACE}/ccache-4.8.3-windows-x86_64" >> $GITHUB_PATH
+        mv ccache-4.8.3-windows-x86_64 ccache
+        cp ccache/ccache.exe ccache/cl.exe
+        echo "${GITHUB_WORKSPACE}/ccache" >> $GITHUB_PATH
+        echo "CCACHE_DIR=${GITHUB_WORKSPACE}/ccache" >> $GITHUB_ENV
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
@@ -32,10 +35,10 @@ jobs:
     - name: Configure
       shell: bash
       run: |
-           cmake -B _build -S . \
+           VERBOSE=1 cmake -B _build -S . \
            -DCMAKE_BUILD_TYPE=Release \
            -DCMAKE_VS_GLOBALS="CLToolExe=cl.exe;CLToolPath=${GITHUB_WORKSPACE}/ccache-4.8.3-windows-x86_64;TrackFileAccess=false;UseMultiToolTask=true;DebugInformationFormat=OldStyle"
     - name: Build
       shell: bash
       run: |
-             cmake --build _build --config Release
+        VERBOSE=1 cmake --build _build --config Release
